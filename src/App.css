@@ -2,17 +2,10 @@
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 20px 14px;
 }
 
 .phoneCard {
   width: min(420px, 100%);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 18px;
-  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.12);
-  backdrop-filter: blur(8px);
-  padding: 18px 16px 16px;
 }
 
 .header {
@@ -41,6 +34,46 @@
   border-radius: 999px;
   padding: 8px 12px;
   width: fit-content;
+}
+
+.credit {
+  margin: 14px auto 0;
+  padding-bottom: 10px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.coffeeLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  margin: 6px auto 8px;
+  width: fit-content;
+  color: rgba(15, 23, 42, 0.8);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.coffeeLink:hover {
+  text-decoration: underline;
+}
+
+.coffeeLink:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+.coffeeHeart {
+  color: #ef4444;
+  font-size: 18px;
+  margin-right: 6px;
+  line-height: 1;
 }
 
 .platesGrid {

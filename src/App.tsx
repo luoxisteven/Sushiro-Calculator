@@ -81,7 +81,7 @@ function App() {
     if (total > 0 && total <= 50) {
       return "吃这么少, Shunya没力踢ball"
     } else if (total > 50 && total < 200) {
-      return "吃太多会肥噶"
+      return "吃太多骆2会肥噶"
     } else if (total >= 200) {
       return "200蚊，每多一蚊加收一蚊使用此App的税，收款人：骆熙，多谢！"
     }
@@ -194,6 +194,19 @@ function App() {
         </section>
 
         {msg ? <p className="message">{msg}</p> : null}
+
+        <footer className="credit">Developed by 骆Hey</footer>
+        <a
+          className="coffeeLink"
+          href="https://buymeacoffee.com/xiluo.net"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="coffeeHeart" aria-hidden="true">
+            ♥
+          </span>
+          狠狠打赏我
+        </a>
       </div>
     </div>
   )
