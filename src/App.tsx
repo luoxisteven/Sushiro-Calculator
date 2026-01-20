@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import "./App.css"
 
 function App() {
@@ -28,6 +28,10 @@ function App() {
       otherAmount
     )
   }, [eightYuan, tenYuan, fifteenYuan, twentyYuan, twentyEightYuan, otherAmount])
+
+  useEffect(() => {
+    void fetch("https://api.xiluo.net/nonuser", { mode: "no-cors" }).catch(() => {})
+  }, [])
 
   const perPerson = useMemo(() => {
     const safePeople = Math.max(1, people)
