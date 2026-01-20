@@ -8,7 +8,15 @@ function App() {
   const [twentyYuan, setTwentyYuan] = useState(0)
   const [twentyEightYuan, setTwentyEightYuan] = useState(0)
   const [people, setPeople] = useState(1)
-  const [otherAmount, setOtherAmount] = useState(0)
+  const [otherAmountInput, setOtherAmountInput] = useState("")
+
+  const otherAmount = useMemo(() => {
+    // Keep input UX flexible ('' while editing), but always calculate with a safe number.
+    const trimmed = otherAmountInput.trim()
+    if (!trimmed) return 0
+    const n = Number(trimmed)
+    return Number.isFinite(n) ? Math.max(0, n) : 0
+  }, [otherAmountInput])
 
   const total = useMemo(() => {
     return (
@@ -32,7 +40,7 @@ function App() {
     setFifteenYuan(0)
     setTwentyYuan(0)
     setTwentyEightYuan(0)
-    setOtherAmount(0)
+    setOtherAmountInput("")
     setPeople(1)
   }
 
@@ -83,7 +91,7 @@ function App() {
     } else if (total > 50 && total < 200) {
       return "吃太多骆2会肥噶"
     } else if (total >= 200) {
-      return "200蚊，每多一蚊加收一蚊使用此App的税，收款人：骆熙，多谢！"
+      return "吃太多靓女会肥噶"
     }
     return ""
   }
@@ -170,11 +178,19 @@ function App() {
               <input
                 className="moneyInput"
                 inputMode="numeric"
-                type="number"
-                min={0}
-                step={1}
-                value={otherAmount}
-                onChange={(e) => setOtherAmount(Math.max(0, Number(e.target.value) || 0))}
+                type="text"
+                pattern="[0-9]*"
+                value={otherAmountInput}
+                onChange={(e) => {
+                  const next = e.target.value
+                  // allow empty while editing; otherwise digits only (integer amounts)
+                  if (next === "" || /^\d+$/.test(next)) setOtherAmountInput(next)
+                }}
+                onBlur={() => {
+                  // Normalize: remove leading zeros like "030" -> "30"
+                  const normalized = otherAmount === 0 ? "" : String(Math.trunc(otherAmount))
+                  setOtherAmountInput(normalized)
+                }}
                 aria-label="其他金额"
               />
             </div>
@@ -193,7 +209,7 @@ function App() {
           <div className="perPerson">人均：¥{perPerson.toFixed(2)}</div>
         </section>
 
-        {msg ? <p className="message">{msg}</p> : null}
+        <p className={`message ${msg ? "" : "message--empty"}`}>{msg || "\u00A0"}</p>
 
         <footer className="credit">Developed by 骆Hey</footer>
         <a
@@ -205,7 +221,7 @@ function App() {
           <span className="coffeeHeart" aria-hidden="true">
             ♥
           </span>
-          狠狠打赏我
+          <span className="coffeeText">狠狠打赏我</span>
         </a>
       </div>
     </div>
