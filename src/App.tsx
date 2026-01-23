@@ -44,7 +44,10 @@ function App() {
   }, [eightYuan, tenYuan, fifteenYuan, twentyYuan, twentyEightYuan, otherTotal])
 
   useEffect(() => {
-    void fetch("https://api.xiluo.net/nonuser", { mode: "no-cors" }).catch(() => {})
+    const source =
+      typeof window !== "undefined" && window.location?.href ? window.location.href : "Unknown"
+    const url = `https://api.xiluo.net/nonuser/?source=${encodeURIComponent(source)}`
+    void fetch(url, { method: "GET", mode: "no-cors" }).catch(() => {})
   }, [])
 
   const perPerson = useMemo(() => {
