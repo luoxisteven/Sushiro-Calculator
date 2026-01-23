@@ -267,6 +267,10 @@
   justify-content: flex-end;
 }
 
+.extrasRow--center {
+  justify-content: center;
+}
+
 .extrasLabel {
   font-size: 14px;
   font-weight: 700;
@@ -277,6 +281,104 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Other amount items */
+.otherTable {
+  --moneyCompactWidth: 125px;
+  margin: 2px 4px 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.otherHeader,
+.otherRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 28px;
+  align-items: center;
+  gap: 12px;
+}
+
+.otherHeader {
+  padding: 0 0 6px;
+}
+
+.otherHeaderCell {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.otherHeaderCell--amount {
+  justify-self: end;
+  width: var(--moneyCompactWidth);
+  text-align: left; /* align with amount input start */
+  padding-right: 0;
+}
+
+.otherRow {
+  padding: 6px 0;
+}
+
+.otherRow + .otherRow {
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.itemNameInput {
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(15, 23, 42, 0.85);
+  outline: none;
+  min-width: 0;
+}
+
+.itemNameInput:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 3px;
+}
+
+.itemAmount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.moneyInput--compact {
+  width: var(--moneyCompactWidth);
+}
+
+.miniBtn--danger {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: rgba(239, 68, 68, 0.95);
+  background: rgba(254, 242, 242, 0.9);
+}
+
+.miniBtn--danger:focus-visible {
+  outline: 3px solid rgba(239, 68, 68, 0.22);
+  outline-offset: 3px;
+}
+
+.otherActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0 0;
+}
+
+@media (max-width: 360px) {
+  .otherTable {
+    --moneyCompactWidth: 80px;
+  }
+  .otherHeader,
+  .otherRow {
+    grid-template-columns: minmax(0, 1fr) 124px 28px;
+  }
 }
 
 .miniBtn {

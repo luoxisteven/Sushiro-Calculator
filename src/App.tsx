@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from "react"
 import "./App.css"
 
+type OtherItem = {
+  id: string
+  name: string
+  amountInput: string
+}
+
+function makeId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
 function App() {
   const [eightYuan, setEightYuan] = useState(0)
   const [tenYuan, setTenYuan] = useState(0)
@@ -8,15 +19,18 @@ function App() {
   const [twentyYuan, setTwentyYuan] = useState(0)
   const [twentyEightYuan, setTwentyEightYuan] = useState(0)
   const [people, setPeople] = useState(1)
-  const [otherAmountInput, setOtherAmountInput] = useState("")
+  const [otherItems, setOtherItems] = useState<OtherItem[]>([
+    { id: makeId(), name: "", amountInput: "" },
+  ])
 
-  const otherAmount = useMemo(() => {
-    // Keep input UX flexible ('' while editing), but always calculate with a safe number.
-    const trimmed = otherAmountInput.trim()
-    if (!trimmed) return 0
-    const n = Number(trimmed)
-    return Number.isFinite(n) ? Math.max(0, n) : 0
-  }, [otherAmountInput])
+  const otherTotal = useMemo(() => {
+    return otherItems.reduce((sum, item) => {
+      const trimmed = item.amountInput.trim()
+      if (!trimmed) return sum
+      const n = Number(trimmed)
+      return sum + (Number.isFinite(n) ? Math.max(0, n) : 0)
+    }, 0)
+  }, [otherItems])
 
   const total = useMemo(() => {
     return (
@@ -25,9 +39,9 @@ function App() {
       fifteenYuan * 15 +
       twentyYuan * 20 +
       twentyEightYuan * 28 +
-      otherAmount
+      otherTotal
     )
-  }, [eightYuan, tenYuan, fifteenYuan, twentyYuan, twentyEightYuan, otherAmount])
+  }, [eightYuan, tenYuan, fifteenYuan, twentyYuan, twentyEightYuan, otherTotal])
 
   useEffect(() => {
     void fetch("https://api.xiluo.net/nonuser", { mode: "no-cors" }).catch(() => {})
@@ -44,8 +58,23 @@ function App() {
     setFifteenYuan(0)
     setTwentyYuan(0)
     setTwentyEightYuan(0)
-    setOtherAmountInput("")
+    setOtherItems([{ id: makeId(), name: "", amountInput: "" }])
     setPeople(1)
+  }
+
+  function addOtherItem() {
+    setOtherItems((prev) => [...prev, { id: makeId(), name: "", amountInput: "" }])
+  }
+
+  function removeOtherItem(id: string) {
+    setOtherItems((prev) => {
+      const next = prev.filter((x) => x.id !== id)
+      return next.length > 0 ? next : [{ id: makeId(), name: "", amountInput: "" }]
+    })
+  }
+
+  function updateOtherItem(id: string, patch: Partial<OtherItem>) {
+    setOtherItems((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)))
   }
 
   function PlateCounter({
@@ -175,36 +204,74 @@ function App() {
             </div>
           </div>
 
-          <div className="extrasRow">
-            <div className="extrasLabel">其他金额</div>
-            <div className="extrasControl">
-              <span className="miniPrefix">¥</span>
-              <input
-                className="moneyInput"
-                inputMode="numeric"
-                type="text"
-                pattern="[0-9]*"
-                value={otherAmountInput}
-                onChange={(e) => {
-                  const next = e.target.value
-                  // allow empty while editing; otherwise digits only (integer amounts)
-                  if (next === "" || /^\d+$/.test(next)) setOtherAmountInput(next)
-                }}
-                onBlur={() => {
-                  // Normalize: remove leading zeros like "030" -> "30"
-                  const normalized = otherAmount === 0 ? "" : String(Math.trunc(otherAmount))
-                  setOtherAmountInput(normalized)
-                }}
-                aria-label="其他金额"
-              />
+
+          <div className="otherTable" aria-label="其他金额明细">
+            <div className="otherHeader">
+              <div className="otherHeaderCell">其他项目</div>
+              <div className="otherHeaderCell otherHeaderCell--amount">金额</div>
+              <div className="otherHeaderCell otherHeaderCell--action" aria-hidden="true" />
+            </div>
+
+            {otherItems.map((item) => (
+              <div className="otherRow" key={item.id}>
+                <input
+                  className="itemNameInput"
+                  type="text"
+                  value={item.name}
+                  placeholder="例如：乌冬面"
+                  onChange={(e) => updateOtherItem(item.id, { name: e.target.value })}
+                  aria-label="项目"
+                />
+
+                <div className="itemAmount">
+                  <span className="miniPrefix">¥</span>
+                  <input
+                    className="moneyInput moneyInput--compact"
+                    inputMode="numeric"
+                    type="text"
+                    pattern="[0-9]*"
+                    value={item.amountInput}
+                    onChange={(e) => {
+                      const next = e.target.value
+                      if (next === "" || /^\d+$/.test(next))
+                        updateOtherItem(item.id, { amountInput: next })
+                    }}
+                    onBlur={() => {
+                      const trimmed = item.amountInput.trim()
+                      if (!trimmed) return
+                      const n = Number(trimmed)
+                      const normalized = Number.isFinite(n) ? String(Math.max(0, Math.trunc(n))) : ""
+                      updateOtherItem(item.id, { amountInput: normalized })
+                    }}
+                    aria-label="金额"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  className="miniBtn miniBtn--danger"
+                  onClick={() => removeOtherItem(item.id)}
+                  aria-label="删除项目"
+                >
+                  −
+                </button>
+              </div>
+            ))}
+
+            <div className="otherActions">
+              <button type="button" className="miniBtn" onClick={addOtherItem} aria-label="新增项目">
+                +
+              </button>
             </div>
           </div>
 
-          <div className="extrasRow extrasRow--end">
-            <button type="button" className="resetBtn" onClick={resetAll}>
-              Reset
-            </button>
+          <div className="extrasRow">
+            <div className="extrasLabel">其他合计：</div>
+            <div className="miniValue" aria-label="其他合计">
+              ¥{otherTotal}
+            </div>
           </div>
+
         </section>
 
         <section className="totalCard" aria-label="Total">
@@ -212,6 +279,12 @@ function App() {
           <div className="totalValue">¥{total}</div>
           <div className="perPerson">人均：¥{perPerson.toFixed(2)}</div>
         </section>
+
+        <div className="extrasRow extrasRow--center">
+          <button type="button" className="resetBtn" onClick={resetAll}>
+            重置
+          </button>
+        </div>
 
         <p className={`message ${msg ? "" : "message--empty"}`}>{msg || "\u00A0"}</p>
 
