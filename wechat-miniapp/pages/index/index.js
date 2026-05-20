@@ -146,18 +146,18 @@ Page({
     )
   },
 
-  openCoffee() {
-    const url = 'https://buymeacoffee.com/xiluo.net'
-    wx.setClipboardData({
-      data: url,
-      success() {
-        wx.showModal({
-          title: '链接已复制',
-          content: url,
-          confirmText: '好的',
-          showCancel: false
-        })
-      }
-    })
-  }
+  // openCoffee() {
+  //   const url = 'https://buymeacoffee.com/xiluo.net'
+  //   wx.setClipboardData({
+  //     data: url,
+  //     success() {
+  //       wx.showModal({
+  //         title: '链接已复制',
+  //         content: url,
+  //         confirmText: '好的',
+  //         showCancel: false
+  //       })
+  //     }
+  //   })
+  // }
 })

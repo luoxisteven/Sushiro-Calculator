@@ -122,9 +122,9 @@
     <view class="message {{msg ? '' : 'message--empty'}}">{{msg ? msg : ' '}}</view>
 
     <view class="credit">Developed by 骆Hey</view>
-    <view class="coffeeLink" bindtap="openCoffee">
+    <!-- <view class="coffeeLink" bindtap="openCoffee">
       <text class="coffeeHeart">♥</text>
       <text class="coffeeText">狠狠打赏我</text>
-    </view>
+    </view> -->
   </view>
 </view>
