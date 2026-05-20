@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+miniprogram_npm/
+
+# WeChat DevTools local cache / per-developer settings
+.tea/
+project.private.config.json
+
+# Logs
+*.log
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
